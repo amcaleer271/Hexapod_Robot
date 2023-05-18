@@ -1,17 +1,12 @@
 #include <Servo.h>
 
-Servo servo1;
-Servo servo2;
-Servo servo3;
+Servo joint[18];
 
 void setup() {
-  servo1.attach(3);  
-  servo2.attach(5);
-  servo3.attach(6);
-
-  servo1.write(90);
-  servo2.write(90);
-  servo3.write(90);
+  for(int i = 1; i<=18; i++){
+    joint[i].attach(22+i);
+  }
+  moveAll(90);
 }
 
 void loop() {
@@ -23,4 +18,10 @@ void loop() {
 //     servo1.write(j);
 //     delay(5);
 //   }
+}
+
+void moveAll(int pos){
+  for(int j = 1; j<=18; j++){
+    joint[j].write(pos);
+  }
 }
