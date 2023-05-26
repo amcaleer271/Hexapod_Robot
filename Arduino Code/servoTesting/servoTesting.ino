@@ -3,25 +3,42 @@
 Servo joint[18];
 
 void setup() {
+
+  Serial.begin(9600);
+
   for(int i = 1; i<=18; i++){
+    joint[i].write(50);
     joint[i].attach(22+i);
+    
+
   }
-  moveAll(90);
 }
 
 void loop() {
-//   for(int i = 0; i < 180; i++){
-//     servo1.write(i);
-//     delay(5);
-//   }
-//   for(int j = 180; j > 0; j--){
-//     servo1.write(j);
-//     delay(5);
-//   }
-}
+  // testJoint(1,0,100);
+  // testJoint(2,0,160);
+  // testJoint(3,0,100);
+  // testJoint(4,0,100);
+  // testJoint(5,0,160);
+  // testJoint(6,0,160);
+  // testJoint(7,25,100);
+  // testJoint(8,0,160);
+  // testJoint(9,0,160);
 
-void moveAll(int pos){
-  for(int j = 1; j<=18; j++){
-    joint[j].write(pos);
+}
+// void moveAll(int pos){
+//   for(int j = 1; j<=18; j++){
+//     joint[j].write(pos);
+//   }
+// }
+
+void testJoint(int jointNum, int left, int right){
+  for(int i = left; i <=right; i++){
+    joint[jointNum].write(i);
+    delay(25);
+  }
+  for(int i = right; i >= left; i--){
+    joint[jointNum].write(i);
+    delay(25);
   }
 }
