@@ -15,14 +15,23 @@ void setup() {
 }
 
 void loop() {
-  // testJoint(1,0,100);
-  // testJoint(2,0,160);
-  // testJoint(3,0,100);
+  delay(1500);
+  testJoint(1,0,100);
+  delay(1500);
+  testJoint(2,0,160);
+  delay(1500);
+  testJoint(3,0,100);
+  // delay(1500);
   // testJoint(4,0,100);
+  // delay(1500);
   // testJoint(5,0,160);
+  // delay(1500);
   // testJoint(6,0,160);
+  // delay(1500);
   // testJoint(7,25,100);
+  // delay(1500);
   // testJoint(8,0,160);
+  // delay(1500);
   // testJoint(9,0,160);
 
 }
