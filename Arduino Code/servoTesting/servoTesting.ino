@@ -1,53 +1,45 @@
 #include <Servo.h>
 
-Servo joint[18];
+Servo joint[25];  //create an array of 18 servo objects
+
 
 void setup() {
 
   Serial.begin(9600);
 
-  for(int i = 1; i<=18; i++){
-    joint[i].write(50);
-    joint[i].attach(22+i);
-    
-
+//attach all servo objects to respective ports
+  for(int i = 1; i<=25; i++){
+    joint[i].attach(21 + i);
   }
+  Serial.println("Servos Attached");
 }
 
 void loop() {
-  delay(1500);
-  testJoint(1,0,100);
-  delay(1500);
-  testJoint(2,0,160);
-  delay(1500);
-  testJoint(3,0,100);
-  // delay(1500);
-  // testJoint(4,0,100);
-  // delay(1500);
-  // testJoint(5,0,160);
-  // delay(1500);
-  // testJoint(6,0,160);
-  // delay(1500);
-  // testJoint(7,25,100);
-  // delay(1500);
-  // testJoint(8,0,160);
-  // delay(1500);
-  // testJoint(9,0,160);
+
+
+  
 
 }
-// void moveAll(int pos){
-//   for(int j = 1; j<=18; j++){
-//     joint[j].write(pos);
-//   }
-// }
 
-void testJoint(int jointNum, int left, int right){
-  for(int i = left; i <=right; i++){
-    joint[jointNum].write(i);
-    delay(25);
+//move all serovs to a specified angle
+void moveAll(int pos){
+   for(int j = 1; j<=18; j++){
+     joint[j].write(pos);
+   }
+}
+
+void individualTest(){
+  Serial.println("Enter joint to test: ");
+  while(Serial.available() == 0){
+    //empty loop
   }
-  for(int i = right; i >= left; i--){
-    joint[jointNum].write(i);
-    delay(25);
+  int testingJoint = Serial.parseInt();
+  for(int i = 50; i <= 100; i++){
+    joint[testingJoint].write(i);
+    delay(20);
+  }
+  for(int i = 100; i >= 50; i--){
+    joint[testingJoint].write(i);
+    delay(20);
   }
 }
