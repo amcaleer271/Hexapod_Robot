@@ -23,7 +23,7 @@ void setup() {
   joint[5].write(170);
   joint[6].write(158);
 
-  joint[1].write(100);
+  joint[1].write(85);
   joint[2].write(177);
   joint[3].write(185);
 
@@ -40,31 +40,52 @@ void setup() {
 }
 
 void loop() {
-  move11(0);
-  move12(0);
-  move13(0);
-
-  move21(0);
-  move22(0);
-  move23(0);
-
-  move31(0);
-  move32(0);
-  move33(0);
-
-  move41(0);
-  move42(0);
-  move43(0);
-
-  move51(0);
-  move52(0);
-  move53(0);
-
-  move61(0);
-  move62(0);
-  move63(0);
+  
 }
 
+void walkf(int period, int steps){
+  for(int i = 0; i <= steps; i++){
+    int group1 = i;
+    int group2 = i + steps/2;
+    if(group2 > steps){
+      group2 = group2 % steps;
+    }
+    move11(group1);
+    move21(group2);
+    move31(group1);
+
+    move61(-1 * group2);
+    move51(-1 * group1);
+    move41(-1 * group2);
+    delay(1000 * period / steps);
+  }
+
+}
+void leg1f(int period, int steps, int shift){    
+  //period = time [s] for 1 loop, steps = num steps in loop, shift = phase shift
+  //default period = 1 sec, steps = 60, shift = 0
+  for(int i = 0; i <= steps; i++){
+    int movement = i + shift;
+    if(movement > steps){
+      movement = movement % steps;
+    }
+    move11(movement);
+    delay(1000 * period / steps);
+  }
+}
+
+void leg6f(int period, int steps, int shift){
+  //period = time [s] for 1 loop, steps = num steps in loop, shift = phase shift
+  //default period = 1 sec, steps = 60, shift = 0
+  for(int i = 0; i <= steps; i++){
+    int movement = i + shift;
+    if(movement > steps){
+      movement = movement % steps;
+    }
+    move61(-1 * movement);
+    delay(1000 * period / steps);
+  }
+}
 //move all serovs to a specified angle
 void moveAll(int pos){
    for(int j = 0; j<=25; j++){
@@ -150,7 +171,7 @@ void move53(int pos){
 }
 
 void move61(int pos){
-  joint[1].write(100 + pos);
+  joint[1].write(85 + pos);
 }
 
 void move62(int pos){
