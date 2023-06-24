@@ -3,29 +3,29 @@
 Servo joint[25];  //create an array of 18 servo objects
 
 void setup() {
-  joint[24].write(120);
-  joint[23].write(0);
-  joint[22].write(0);
+  joint[24].write(160);
+  joint[23].write(90);
+  joint[22].write(30);
 
-  joint[21].write(50);
-  joint[20].write(10);
-  joint[19].write(20);
+  joint[21].write(90);
+  joint[20].write(100);
+  joint[19].write(50);
 
-  joint[18].write(100);
-  joint[17].write(5);
-  joint[16].write(20);
+  joint[18].write(140);
+  joint[17].write(95);
+  joint[16].write(50);
 
-  joint[7].write(90);
-  joint[8].write(170);
-  joint[9].write(155);
+  joint[7].write(50);
+  joint[8].write(80);
+  joint[9].write(125);
 
-  joint[4].write(90);
-  joint[5].write(170);
-  joint[6].write(158);
+  joint[4].write(50);
+  joint[5].write(80);
+  joint[6].write(128);
 
-  joint[1].write(85);
-  joint[2].write(177);
-  joint[3].write(185);
+  joint[1].write(45);
+  joint[2].write(87);
+  joint[3].write(135);
 
 
   Serial.begin(9600);
@@ -40,7 +40,8 @@ void setup() {
 }
 
 void loop() {
-  walkf(1,38, 3.14, 0);
+
+  walkf(0.5,38, 3.14, 0);
 }
 
 //params - period [s], steps [steps], offset [rads], enable [0/1]
@@ -51,15 +52,20 @@ void walkf(float period, int steps, float shift, int enable){
   float group2Hip;
   float group1Knee;
   float group2Knee;
+  float group1Foot;
+  float group2Foot;
 
   for(int i = 0; i <= 2 * steps; i++){
     int hStep = steps/2;
+
+    //calculate hip angles
     group1 = hStep + hStep * cos(2 * 3.14 * i / (2*steps));
     group2 = hStep + hStep * cos((2 * 3.14 * i / (2*steps)) + shift);
 
     group1Hip = group1;
     group2Hip = group2;
 
+    //calculate knee angles
     if((i % (2 * steps)) < steps){
       group1Knee = 180;
       group2Knee = 180 - 2 *(hStep + hStep * cos((2 * 3.14 * i / steps) + shift));
@@ -69,6 +75,15 @@ void walkf(float period, int steps, float shift, int enable){
       group2Knee = 180;
     }
     
+    //calculate foot angles
+    if(group1Knee == 180){
+      group1Foot = 0;
+      group2Foot = 180 - group2Knee;
+    }
+    else{
+      group1Foot = 180 - group1Knee;
+      group2Foot = 0;
+    }
     //move all limbs
     if(enable == 1){
       //upper limbs
@@ -90,6 +105,13 @@ void walkf(float period, int steps, float shift, int enable){
       move42(-1 * group2Knee);
 
       //end limbs
+      move13(-1 * group1Foot + 110);
+      move23(-1 * group2Foot + 110);
+      move33(-1 * group1Foot + 110);
+
+      move63(group2Foot - 110);
+      move53(group1Foot - 110);
+      move43(group2Foot - 110);
     }
 
     //debug info
@@ -99,41 +121,21 @@ void walkf(float period, int steps, float shift, int enable){
     // Serial.print(group1);
     // Serial.print(" , group2: ");
     // Serial.print(group2);
-    Serial.print(" , group1Knee: ");
-    Serial.print(group1Knee);
-    Serial.print(" , group2Knee: ");
-    Serial.println(group2Knee);
+    // Serial.print(" , group1Knee: ");
+    // Serial.print(group1Knee);
+    // Serial.print(" , group2Knee: ");
+    // Serial.print(group2Knee);
+    Serial.print(" , group1Foot: ");
+    Serial.print(group1Foot);
+    Serial.print(" , group2Foot: ");
+    Serial.println(group2Foot);
     
 
-    delay(float(1000 * period / steps));
+    delay(float(1000 * period * period / steps));
   }
 
 }
-void leg1f(int period, int steps, int shift){    
-  //period = time [s] for 1 loop, steps = num steps in loop, shift = phase shift
-  //default period = 1 sec, steps = 60, shift = 0
-  for(int i = 0; i <= steps; i++){
-    int movement = i + shift;
-    if(movement > steps){
-      movement = movement % steps;
-    }
-    move11(movement);
-    delay(1000 * period / steps);
-  }
-}
 
-void leg6f(int period, int steps, int shift){
-  //period = time [s] for 1 loop, steps = num steps in loop, shift = phase shift
-  //default period = 1 sec, steps = 60, shift = 0
-  for(int i = 0; i <= steps; i++){
-    int movement = i + shift;
-    if(movement > steps){
-      movement = movement % steps;
-    }
-    move61(-1 * movement);
-    delay(1000 * period / steps);
-  }
-}
 //move all serovs to a specified angle
 void moveAll(int pos){
    for(int j = 0; j<=25; j++){
