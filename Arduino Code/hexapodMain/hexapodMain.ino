@@ -1,6 +1,8 @@
 #include <Servo.h>
 
 Servo joint[25];  //create an array of 18 servo objects
+int voltagePin = 3;
+int led = 7;
 
 void setup() {
   joint[24].write(160);
@@ -27,6 +29,7 @@ void setup() {
   joint[2].write(27);
   joint[3].write(105);
 
+  pinMode(led, OUTPUT);
 
   Serial.begin(9600);
 
@@ -36,19 +39,32 @@ void setup() {
   }
   Serial.println("Servos Attached");
   delay(1000);
-  
+  digitalWrite(led, HIGH);
 }
 
 void loop() {
-  for(int i = 0; i <= 5; i++){
-    walkf(1,38, 3.14, 1);
+  
+  checkBattery();
+  for(int i = 0; i <= 4; i++){
+    walkf(1,38, 3.14, 0);
   }
-  for(int i = 0; i <= 5; i++){
-    walkb(1,38, 3.14, 1);
+  for(int i = 0; i <= 4; i++){
+    walkb(1,38, 3.14, 0);
   }
   
 }
 
+//checks battery voltage is above 12.4v
+void checkBattery(){
+  if(analogRead(voltagePin) < 840){
+    for(int i = 0; i<=3; i++){
+      delay(1000);
+      digitalWrite(led, LOW);
+      delay(1000);
+      digitalWrite(led, HIGH);
+    }
+  }
+}
 //walk backward (towards arduino)
 //params - period [s], steps [steps], offset [rads], enable [0/1]
 void walkb(float period, int steps, float shift, int enable){
@@ -121,7 +137,7 @@ void walkb(float period, int steps, float shift, int enable){
     }
 
     //debug info
-    Serial.print("i: ");
+    // Serial.print("i: ");
     // Serial.print(i);
     // Serial.print(" , group1: ");
     // Serial.print(group1);
@@ -131,10 +147,10 @@ void walkb(float period, int steps, float shift, int enable){
     // Serial.print(group1Knee);
     // Serial.print(" , group2Knee: ");
     // Serial.print(group2Knee);
-    Serial.print(" , group1Foot: ");
-    Serial.print(group1Foot);
-    Serial.print(" , group2Foot: ");
-    Serial.println(group2Foot);
+    // Serial.print(" , group1Foot: ");
+    // Serial.print(group1Foot);
+    // Serial.print(" , group2Foot: ");
+    // Serial.println(group2Foot);
     
     delay(float(1000 * period * period / steps));
   }
@@ -212,7 +228,7 @@ void walkf(float period, int steps, float shift, int enable){
     }
 
     //debug info
-    Serial.print("i: ");
+    // Serial.print("i: ");
     // Serial.print(i);
     // Serial.print(" , group1: ");
     // Serial.print(group1);
@@ -222,10 +238,10 @@ void walkf(float period, int steps, float shift, int enable){
     // Serial.print(group1Knee);
     // Serial.print(" , group2Knee: ");
     // Serial.print(group2Knee);
-    Serial.print(" , group1Foot: ");
-    Serial.print(group1Foot);
-    Serial.print(" , group2Foot: ");
-    Serial.println(group2Foot);
+    // Serial.print(" , group1Foot: ");
+    // Serial.print(group1Foot);
+    // Serial.print(" , group2Foot: ");
+    // Serial.println(group2Foot);
     
 
     delay(float(1000 * period * period / steps));
