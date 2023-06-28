@@ -1,8 +1,6 @@
 #include <SoftwareSerial.h>
 
 SoftwareSerial HC12(10, 11); // HC-12 TX Pin, HC-12 RX Pin
-int joyXPin = 2;
-int joyYPin = 12;
 int sendMsg;
 
 void setup() {
@@ -18,7 +16,6 @@ void loop() {
   HC12.println(sendMsg);
   Serial.println(sendMsg);
 
-  delay(250);
 }
 
 

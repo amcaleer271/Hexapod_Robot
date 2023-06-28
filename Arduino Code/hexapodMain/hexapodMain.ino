@@ -4,6 +4,9 @@ Servo joint[25];  //create an array of 18 servo objects
 int voltagePin = 3;
 int led = 7;
 
+int joyX;
+int joyY;
+int msg;
 void setup() {
   joint[24].write(160);
   joint[23].write(150);
@@ -37,8 +40,7 @@ void setup() {
   for(int i = 1; i<=25; i++){
     joint[i].attach(21 + i);
   }
-  Serial.println("Servos Attached");
-  delay(1000);
+  
   digitalWrite(led, HIGH);
 }
 
