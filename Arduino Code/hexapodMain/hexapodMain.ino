@@ -68,7 +68,7 @@ void checkBattery(){
   }
 }
 
-//params - period [s], steps [steps], offset [rads], direction [0/1], enable [0/1]
+//params - period [s], steps [steps], offset [rads], direction (0 is forward) [0/1], enable [0/1]
 void walk(float period, int steps, int direction, int enable){
   float group1;
   float group2;
