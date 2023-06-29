@@ -20,6 +20,9 @@ void loop() {
     msg = HC12.parseInt();
     x = msg/ 100;
     y = msg - (msg / 100)*100;
+    Serial.print(x);
+    Serial.print(" ");
+    Serial.println(y);
     if(x < 65 && x > 45){
       digitalWrite(3, LOW);
       digitalWrite(5, LOW);
