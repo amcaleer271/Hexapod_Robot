@@ -7,6 +7,10 @@ int led = 7;
 int joyX;
 int joyY;
 int msg;
+
+int walkStep = 0;
+int controllerVal;
+
 void setup() {
   joint[24].write(160);
   joint[23].write(150);
@@ -48,27 +52,113 @@ void loop() {
   
   checkBattery();
 
-  for(int i = 0; i <= 3; i++){
-    walk(1, 38, 0, 0);
-  }
-  for(int j = 0; j <=3; j++){
-    walk(1, 38, 1, 0);
-  }
-  
-  
-}
-
-//checks battery voltage is above 12.4v
-void checkBattery(){
-  if(analogRead(voltagePin) < 840){
-    for(int i = 0; i<=3; i++){
-      delay(1000);
-      digitalWrite(led, LOW);
-      delay(1000);
-      digitalWrite(led, HIGH);
+  //get value from controller, if forward increase walk step, if reverse decrease walk step, else do nothing
+  controllerVal = radioDecode();
+  if(controllerVal == 8){
+    if(walkStep >= 74){
+      walkStep = 0;
+    }
+    else{
+      walkStep += 1;
     }
   }
+  else if(controllerVal == 2){
+    if(walkStep <= 0){
+      walkStep = 74;
+    }
+    else{
+      walkStep -= 1;
+    }
+  }
+
+  controllerWalk(walkStep, 1, 38, 0, 1);
+  delay(20);
 }
+
+
+void controllerWalk(int currentStep, int period, int steps, int direction, int enable){
+  float group1;
+  float group2;
+  float group1Hip;
+  float group2Hip;
+  float group1Knee;
+  float group2Knee;
+  float group1Foot;
+  float group2Foot;
+  int i = currentStep;
+  int hStep = steps/2;
+
+  //calculate hip angles
+  group1 = hStep + hStep * cos(2 * 3.14159 * i / (2*steps));
+  group2 = hStep + hStep * cos((2 * 3.14159 * i / (2*steps)) + 3.14159);
+
+  group1Hip = group1;
+  group2Hip = group2;
+
+  //calculate knee angles
+  if((i % (2 * steps)) < steps){
+    group1Knee = 180;
+    group2Knee = 180 - 2 *(hStep + hStep * cos((2 * 3.14159 * i / steps) + 3.14159));
+  }
+  else{
+    group1Knee = 180 - 2 * (hStep + hStep * cos((2 * 3.14159 * i / steps) + 3.14159));
+    group2Knee = 180;
+  }
+  
+  //calculate foot angles
+  if(group1Knee == 180){
+    group1Foot = 0;
+    group2Foot = 180 - group2Knee;
+  }
+  else{
+    group1Foot = 180 - group1Knee;
+    group2Foot = 0;
+  }
+  if(enable == 1){
+    //upper limbs
+    move11(group1Hip + 30);
+    move21(group2Hip + 30);
+    move31(group1Hip + 55);
+
+    move61(-1 * group2Hip - 30);
+    move51(-1 * group1Hip - 30);
+    move41(-1 * group2Hip - 55);
+
+    //middle limbs
+    move12(group1Knee);
+    move22(group2Knee);
+    move32(group1Knee);
+
+    move62(-1 * group2Knee);
+    move52(-1 * group1Knee);
+    move42(-1 * group2Knee);
+
+    //end limbs        
+    move13(-1 * group1Foot + 110);
+    move23(-1 * group2Foot + 110);
+    move33(-1 * group1Foot + 110);
+
+    move63(group2Foot - 110);
+    move53(group1Foot - 110);
+    move43(group2Foot - 110);
+  }
+  //debug info
+  // Serial.print("i: ");
+  // Serial.print(i);
+  // Serial.print(" , group1: ");
+  // Serial.print(group1);
+  // Serial.print(" , group2: ");
+  // Serial.print(group2);
+  // Serial.print(" , group1Knee: ");
+  // Serial.print(group1Knee);
+  // Serial.print(" , group2Knee: ");
+  // Serial.print(group2Knee);
+  // Serial.print(" , group1Foot: ");
+  // Serial.print(group1Foot);
+  // Serial.print(" , group2Foot: ");
+  // Serial.println(group2Foot);
+}
+
 
 //params - period [s], steps [steps], offset [rads], direction (0 is forward) [0/1], enable [0/1]
 void walk(float period, int steps, int direction, int enable){
@@ -231,6 +321,67 @@ void walk(float period, int steps, int direction, int enable){
       // Serial.print(group1Foot);
       // Serial.print(" , group2Foot: ");
       // Serial.println(group2Foot);
+    }
+  }
+}
+
+//convert the binary signals from the recieving arduino into an integer 1-9
+int radioDecode(){
+  if(digitalRead(3) == LOW && digitalRead(5) == LOW){
+    Serial.print("center ");
+    if(digitalRead(6) == LOW && digitalRead(4) == LOW){
+      Serial.println("center ");
+      return(5);
+    }
+    else if(digitalRead(6) == HIGH && digitalRead(4) == LOW){
+      Serial.println("down ");
+      return(8);
+    }
+    else{
+      Serial.println("up");
+      return(2);
+    }
+  }
+  else if(digitalRead(3) == HIGH && digitalRead(5) == LOW){
+    Serial.print("left ");
+    if(digitalRead(6) == LOW && digitalRead(4) == LOW){
+      Serial.println("center ");
+      return(4);
+    }
+    else if(digitalRead(6) == HIGH && digitalRead(4) == LOW){
+      Serial.println("down ");
+      return(7);
+    }
+    else{
+      Serial.println("up");
+      return(1);
+    }
+  }
+  else{
+    Serial.print("right ");
+    if(digitalRead(6) == LOW && digitalRead(4) == LOW){
+      Serial.println("center ");
+      return(6);
+    }
+    else if(digitalRead(6) == HIGH && digitalRead(4) == LOW){
+      Serial.println("down ");
+      return(9);
+    }
+    else{
+      Serial.println("up");
+      return(3);
+    }
+  }
+}
+
+//checks battery voltage is above 12.4v
+void checkBattery(){
+  if(analogRead(voltagePin) < 840){
+    for(int i = 0; i<=3; i++){
+      delay(1000);
+      digitalWrite(led, LOW);
+      delay(1000);
+      digitalWrite(led, HIGH);
     }
   }
 }
