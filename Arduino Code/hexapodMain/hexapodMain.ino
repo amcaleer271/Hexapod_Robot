@@ -4,11 +4,9 @@ Servo joint[25];  //create an array of 18 servo objects
 int voltagePin = 3;
 int led = 7;
 
-int joyX;
-int joyY;
-int msg;
+int lastMsg = 0;
 
-int walkStep = 0;
+int walkStep = 34;
 int controllerVal;
 
 void setup() {
@@ -56,7 +54,7 @@ void loop() {
   controllerVal = radioDecode();
   if(controllerVal == 8){
     if(walkStep >= 74){
-      walkStep = 0;
+      walkStep = 1;
     }
     else{
       walkStep += 1;
@@ -64,15 +62,16 @@ void loop() {
   }
   else if(controllerVal == 2){
     if(walkStep <= 0){
-      walkStep = 74;
+      walkStep = 73;
     }
     else{
       walkStep -= 1;
     }
   }
-
+  //Serial.println(walkStep);
   controllerWalk(walkStep, 1, 38, 0, 1);
   delay(20);
+  
 }
 
 
@@ -116,13 +115,13 @@ void controllerWalk(int currentStep, int period, int steps, int direction, int e
   }
   if(enable == 1){
     //upper limbs
-    move11(group1Hip + 30);
-    move21(group2Hip + 30);
-    move31(group1Hip + 55);
+    move11(1.1*group1Hip + 30);
+    move21(1.1*group2Hip + 30);
+    move31(1.1*group1Hip + 55);
 
-    move61(-1 * group2Hip - 30);
-    move51(-1 * group1Hip - 30);
-    move41(-1 * group2Hip - 55);
+    move61(-1 * 0.7*group2Hip - 30);
+    move51(-1 * 0.7*group1Hip - 30);
+    move41(-1 * 0.7*group2Hip - 55);
 
     //middle limbs
     move12(group1Knee);
@@ -327,51 +326,41 @@ void walk(float period, int steps, int direction, int enable){
 
 //convert the binary signals from the recieving arduino into an integer 1-9
 int radioDecode(){
+  int outputVal;
   if(digitalRead(3) == LOW && digitalRead(5) == LOW){
-    Serial.print("center ");
     if(digitalRead(6) == LOW && digitalRead(4) == LOW){
-      Serial.println("center ");
-      return(5);
+      outputVal = 5;
     }
     else if(digitalRead(6) == HIGH && digitalRead(4) == LOW){
-      Serial.println("down ");
-      return(8);
+      outputVal = 8;
     }
     else{
-      Serial.println("up");
-      return(2);
+      outputVal = 2;
     }
   }
   else if(digitalRead(3) == HIGH && digitalRead(5) == LOW){
-    Serial.print("left ");
     if(digitalRead(6) == LOW && digitalRead(4) == LOW){
-      Serial.println("center ");
-      return(4);
+      outputVal = 4;
     }
     else if(digitalRead(6) == HIGH && digitalRead(4) == LOW){
-      Serial.println("down ");
-      return(7);
+      outputVal = 7;
     }
     else{
-      Serial.println("up");
-      return(1);
+      outputVal = 1;
     }
   }
   else{
-    Serial.print("right ");
     if(digitalRead(6) == LOW && digitalRead(4) == LOW){
-      Serial.println("center ");
-      return(6);
+      outputVal = 6;
     }
     else if(digitalRead(6) == HIGH && digitalRead(4) == LOW){
-      Serial.println("down ");
-      return(9);
+      outputVal = 9;
     }
     else{
-      Serial.println("up");
-      return(3);
+      outputVal = 3;
     }
   }
+  return(outputVal);
 }
 
 //checks battery voltage is above 12.4v
