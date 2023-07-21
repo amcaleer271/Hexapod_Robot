@@ -20,14 +20,12 @@ void loop() {
     msg = HC12.parseInt();
     x = msg/ 100;
     y = msg - (msg / 100)*100;
-    Serial.print(x);
-    Serial.print(" ");
-    Serial.println(y);
-    if(x < 65 && x > 45){
+    
+    if(x < 70 && x > 40){
       digitalWrite(3, LOW);
       digitalWrite(5, LOW);
     }
-    else if(x > 65){
+    else if(x > 70){
       digitalWrite(3, HIGH);
       digitalWrite(5, LOW);
     }
@@ -36,11 +34,11 @@ void loop() {
       digitalWrite(5, HIGH);
     }
 
-    if(y < 65 && y > 45){
+    if(y < 70 && y > 40){
       digitalWrite(6, LOW);
       digitalWrite(7, LOW);
     }
-    else if(y > 65){
+    else if(y > 70){
       digitalWrite(6, HIGH);
       digitalWrite(7, LOW);
     }
@@ -49,4 +47,7 @@ void loop() {
       digitalWrite(7, HIGH);
     }
   }
+  Serial.print(x);
+  Serial.print(" ");
+  Serial.println(y);
 }
