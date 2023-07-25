@@ -2,10 +2,8 @@
 
 Hexie is an Arduino-Mega based Hexapod robot built as a summer project. 
 
-![Hexapod Model Shot](https://github.com/amcaleer271/hexapod-v1/assets/93012410/b3f0f25f-d727-4394-937e-2f60f99b857b)
-
-# Walking Demo
-[<img src="https://i.ytimg.com/vi/QX3Zz461Cco/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDl48dE6cnV9XCkRMhOKqPcKhp0Kw" width="50%">](https://youtu.be/QX3Zz461Cco "Hexapod Walking Demo")
+# Walking Demo (video)
+[<img src="https://i.ytimg.com/vi/QX3Zz461Cco/hq720.jpg?sqp=-oaymwEcCNAFEJQDSFXyq4qpAw4IARUAAIhCGAFwAcABBg==&rs=AOn4CLDl48dE6cnV9XCkRMhOKqPcKhp0Kw" width="75%">](https://youtu.be/QX3Zz461Cco "Hexapod Walking Demo")
 
 # Features:
 6 legs containing 3 servos
