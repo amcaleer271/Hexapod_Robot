@@ -1,4 +1,4 @@
-# Hexapod-v1
+# Hexapod Robot "Hexie"
 
 Hexie is an Arduino-Mega based Hexapod robot built as a summer project. 
 
