@@ -66,14 +66,13 @@ class Leg{
       }
   };
   
-//define legs (joint1, joint2, joint3, offset1, offset2, offset 3)
+//create legs (joint1, joint2, joint3, offset1, offset2, offset3)
   Leg leg1(24,23,22,120,0,0);
   Leg leg2(21,20,19,50,10,20);
   Leg leg3(18,17,16,100,5,20);
   Leg leg4(7,8,11,90,170,155);
   Leg leg5(4,5,6,90,170,158);
   Leg leg6(1,2,3,85,177,185);
-
 void loop() {
   
   checkBattery();
